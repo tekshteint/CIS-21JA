@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.30.30706.0	    01/03/22 20:39:33
+Microsoft (R) Macro Assembler Version 14.30.30706.0	    01/10/22 14:31:12
 hello.asm						     Page 1 - 1
 
 
@@ -25,16 +25,13 @@ hello.asm						     Page 1 - 1
 
 
  00000000			.data
- 00000000 68 65 6C 6C 6F	greeting BYTE "hello tom from assembly", 0ah, 0dh, 0
-	   20 74 6F 6D 20
-	   66 72 6F 6D 20
-	   61 73 73 65 6D
-	   62 6C 79 0A 0D
-	   00
+ 00000000 68 65 6C 6C 6F	greeting BYTE "hello world", 0ah, 0dh, 0
+	   20 77 6F 72 6C
+	   64 0A 0D 00
 
  00000000			.code
  00000000			main PROC
- 00000000  BA 00000000 R		mov edx, OFFSET greeting
+ 00000000  BA 00000000 R		mov edx, OFFSET greeting ;edx = &greeting
  00000005  E8 00000000 E		call writeString
  0000000A  E8 00000000 E	    call crlf
 					exit
@@ -42,7 +39,7 @@ hello.asm						     Page 1 - 1
  00000011  E8 00000000 E   *	    call   ExitProcess
  00000016			main ENDP
 				END main
-Microsoft (R) Macro Assembler Version 14.30.30706.0	    01/03/22 20:39:33
+Microsoft (R) Macro Assembler Version 14.30.30706.0	    01/10/22 14:31:12
 hello.asm						     Symbols 2 - 1
 
 
@@ -136,7 +133,7 @@ Segments and Groups:
 
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
-_DATA  . . . . . . . . . . . . .	32 Bit	 0000001A Para	  Public  'DATA'	
+_DATA  . . . . . . . . . . . . .	32 Bit	 0000000E Para	  Public  'DATA'	
 _TEXT  . . . . . . . . . . . . .	32 Bit	 00000016 Para	  Public  'CODE'	
 
 

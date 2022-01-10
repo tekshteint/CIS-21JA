@@ -8,7 +8,7 @@ greeting BYTE "hello world", 0ah, 0dh, 0
 
 .code
 main PROC
-	mov edx, OFFSET greeting
+	mov edx, OFFSET greeting ;edx = &greeting
 	call writeString
     call crlf
 	exit

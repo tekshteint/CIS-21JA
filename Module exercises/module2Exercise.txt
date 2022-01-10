@@ -1,0 +1,32 @@
+Practice exercise for Module 2
+
+This practice exercise introduces the debugger, which is a tool of the IDE.
+A "classic" debugging method is to print a variable value to screen to see if it's the expected value. However, in assembly programming it's not convenient to print data to screen, so we use the debugger to take a look at the "raw" data that's in memory and in registers.
+The skills we learn in this exercise will be helpful for the rest of the quarter when we need to debug code.
+
+1. In this step we bring a .asm file into the IDE project.
+   - Open the IDE by clicking on the VC++ Project file in the Project32 folder.
+   - Download module2exercise.asm from the class website.
+   - At the Solution Explorer window of the IDE, right click on the existing .asm file 
+     and select "Remove". 
+     This removes the file from the project but doesn't delete the file.   
+   - Add module2exercise.asm to the project by right click on the project name 
+     and select "Add existing", and then choose the module2exercise.asm file.
+     The module2exercise.asm file should appear in the Solution Explorer window.
+   - Double click to open module2exercise.asm
+
+2. Watch the short video "Using the debugger" that's on the class website, which shows how to use the debugger.
+
+3. Use the debugger to fill in the values below.
+   - Set a breakpoint at the mov ebx,-18 line and 
+     run the program to the breakpoint.
+   - Open the debugger Register window 
+   - Run the instruction   mov ebx, -18   
+   - Show what values are in the following registers:
+	BL:
+	BH:
+	BX:
+	EBX:
+
+   - Open the debugger Memory window at the address of mesg.
+     Copy the data of mesg as they appear in memory: 
