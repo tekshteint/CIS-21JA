@@ -1,8 +1,10 @@
-Microsoft (R) Macro Assembler Version 14.30.30706.0	    01/10/22 14:31:12
-hello.asm						     Page 1 - 1
+Microsoft (R) Macro Assembler Version 14.30.30706.0	    01/11/22 14:18:27
+module2exercise.asm					     Page 1 - 1
 
 
-				; hello world in assembly
+
+				; Description:
+				; 
 
 				INCLUDE Irvine32.inc
 			      C ; Include file for Irvine32.lib             (Irvine32.inc)
@@ -23,24 +25,26 @@ hello.asm						     Page 1 - 1
 			      C .LIST
 			      C 
 
-
  00000000			.data
- 00000000 68 65 6C 6C 6F	greeting BYTE "hello world", 0ah, 0dh, 0
+ 00000000 48 65 6C 6C 6F	mesg BYTE "Hello world",0dh,0ah,0
 	   20 77 6F 72 6C
-	   64 0A 0D 00
+	   64 0D 0A 00
 
  00000000			.code
  00000000			main PROC
- 00000000  BA 00000000 R		mov edx, OFFSET greeting ;edx = &greeting
- 00000005  E8 00000000 E		call writeString
- 0000000A  E8 00000000 E	    call crlf
+ 00000000  E8 00000000 E		call Clrscr
+
+ 00000005  BA 00000000 R		mov	 edx, OFFSET mesg
+ 0000000A  E8 00000000 E		call WriteString
+ 0000000F  BB FFFFFFEE			mov ebx, -18
 					exit
- 0000000F  6A 00	   *	    push   +000000000h
- 00000011  E8 00000000 E   *	    call   ExitProcess
- 00000016			main ENDP
+ 00000014  6A 00	   *	    push   +000000000h
+ 00000016  E8 00000000 E   *	    call   ExitProcess
+ 0000001B			main ENDP
+
 				END main
-Microsoft (R) Macro Assembler Version 14.30.30706.0	    01/10/22 14:31:12
-hello.asm						     Symbols 2 - 1
+Microsoft (R) Macro Assembler Version 14.30.30706.0	    01/11/22 14:18:27
+module2exercise.asm					     Symbols 2 - 1
 
 
 
@@ -134,7 +138,7 @@ Segments and Groups:
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
 _DATA  . . . . . . . . . . . . .	32 Bit	 0000000E Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 00000016 Para	  Public  'CODE'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 0000001B Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -241,7 +245,7 @@ WriteStackFrame  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 WriteString  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteToFile  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteWindowsMsg  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000016 Public STDCALL
+main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 0000001B Public STDCALL
 printf . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 scanf  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 wsprintfA  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
@@ -467,7 +471,6 @@ cyan . . . . . . . . . . . . . .	Number	 00000003h
 exit . . . . . . . . . . . . . .	Text   	 INVOKE ExitProcess,0
 gray . . . . . . . . . . . . . .	Number	 00000008h   
 green  . . . . . . . . . . . . .	Number	 00000002h   
-greeting . . . . . . . . . . . .	Byte	 00000000 _DATA	
 lightBlue  . . . . . . . . . . .	Number	 00000009h   
 lightCyan  . . . . . . . . . . .	Number	 0000000Bh   
 lightGray  . . . . . . . . . . .	Number	 00000007h   
@@ -475,6 +478,7 @@ lightGreen . . . . . . . . . . .	Number	 0000000Ah
 lightMagenta . . . . . . . . . .	Number	 0000000Dh   
 lightRed . . . . . . . . . . . .	Number	 0000000Ch   
 magenta  . . . . . . . . . . . .	Number	 00000005h   
+mesg . . . . . . . . . . . . . .	Byte	 00000000 _DATA	
 red  . . . . . . . . . . . . . .	Number	 00000004h   
 white  . . . . . . . . . . . . .	Number	 0000000Fh   
 wsprintf . . . . . . . . . . . .	Text   	 wsprintfA
