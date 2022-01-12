@@ -12,8 +12,8 @@ TITLE Assignment 2 Lab
 ; 3. how to look at data stored in memory
 
 ;;;;;; STEP 1: How to document all your programs in this class			;;;;;;;
-; Name: <Enter your full name here>
-; Date: <Enter date here>
+; Name: Tom Ekshtein
+; Date: 1/11/22
 
 INCLUDE Irvine32.inc
 
@@ -71,10 +71,10 @@ main PROC
 ;;;;;;         You can hit OK to continue because you're only changing  ;;;;;;
 ;;;;;;         the comments, not the code.								;;;;;;
 
-	mov ah, 101b		;   AX =
-	sub ah, -2			;   AH = 
-	inc al				;   AL =
-	xor eax, 0FFFFH		;   EAX = 
+	mov ah, 101b		;   AX = 05FE
+	sub ah, -2			;   AH = 07
+	inc al				;   AL =   FF
+	xor eax, 0FFFFH		;  EAX = FFFFF800
 
 ;;;;;; STEP 7:  How to see memory values:								;;;;;;
 ;;;;;;			From the Debug pull down menu, select Memory -> Memory1 ;;;;;;
@@ -90,7 +90,7 @@ main PROC
 ;;;;;;			2 hexadecimal digits.			     			        ;;;;;;
 ;;;;;;			Enter below what bigData looks like in memory.			;;;;;;
 
-;    bigData in memory = 
+;    bigData in memory = 30 31 32 33 34 35 36 37 38 39 41 42 43 44 45 46
 
 
 ;;;;;; STEP 8: How to stop debugging                               ;;;;;;
