@@ -1,0 +1,17 @@
+x86 midterm notes
+
+open note on laptop or notebook
+check canvas for information 
+
+tldr: 8-12 questions with some having parts a,b,c,...
+SHOW WORK
+sample questions on canvas
+
+from claire vocally:
+show what something in memory looks like
+define arrays/variables/text string/numbers etc
+conversions with bin/hex/dec
+big endian and little endian
+pipeline processors
+flags
+arithmetic computation

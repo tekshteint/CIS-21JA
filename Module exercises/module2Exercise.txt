@@ -23,11 +23,10 @@ The skills we learn in this exercise will be helpful for the rest of the quarter
    - Open the debugger Register window 
    - Run the instruction   mov ebx, -18   
    - Show what values are in the following registers:
-	   
-	BL:      EE  
-	BH:    FF
-	BX:    FFEE  ;FFEE is -18 :)
-       EBX:FFFFFFEE
+	BL: Can't see it 
+	BH: Can't see it 
+	BX: Can't see it 
+	EBX: 0025D000
 
    - Open the debugger Memory window at the address of mesg.
      Copy the data of mesg as they appear in memory: 
