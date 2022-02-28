@@ -1,23 +1,11 @@
-Microsoft (R) Macro Assembler Version 14.30.30706.0	    01/12/22 22:40:06
-Assignment 2 La					     Page 1 - 1
+Microsoft (R) Macro Assembler Version 14.30.30709.0	    02/26/22 21:34:43
+0Lab 7: Calculate time difference with procedure	     Page 1 - 1
 
 
-				TITLE Assignment 2 Lab				
-
-				; The purpose of this lab is to introduce debugging features of the IDE 
-				; and reinforce concepts of modules 1 and 2
-				; By successfully finishing this lab you will learn basic debugging 
-				; skills that will help you debug your labs later in the quarter.
-
-				; There are 3 debugging techniques that you will learn in this lab:
-				; 1. how to set a break point so execution will stop at a certain line of code, 
-				;     and then how to step through each subsequent line of code
-				; 2. how to look at data stored in registers
-				; 3. how to look at data stored in memory
-
-				;;;;;; STEP 1: How to document all your programs in this class			;;;;;;;
-				; Name: Tom Ekshtein
-				; Date: 1/11/22
+				TITLE  Lab 7: Calculate time difference with procedures
+						
+				; Name: Tom Ekshtein, Oskar Castren
+				;ASK IF WE NEED EVERY SINGLE VARIABLE IN 8 BIT REGISTERS
 
 				INCLUDE Irvine32.inc
 			      C ; Include file for Irvine32.lib             (Irvine32.inc)
@@ -38,99 +26,195 @@ Microsoft (R) Macro Assembler Version 14.30.30706.0	    01/12/22 22:40:06
 			      C .LIST
 			      C 
 
+				printStr MACRO strAddress
+					push edx				
+					mov edx, strAddress		
+					call writeString
+					pop edx
+
+				ENDM
+
  00000000			.data
- 00000000			bigData QWORD 1234567890abcdefh
-	   1234567890ABCDEF
+ 00000000 45 6E 74 65 72	hrStr BYTE "Enter hour (0-23): ", 0
+	   20 68 6F 75 72
+	   20 28 30 2D 32
+	   33 29 3A 20 00
+ 00000014 45 6E 74 65 72	mnStr BYTE "Enter minute (0-59): ", 0
+	   20 6D 69 6E 75
+	   74 65 20 28 30
+	   2D 35 39 29 3A
+	   20 00
+ 0000002A 49 6E 76 61 6C	timeErrStr BYTE "Invalid input", 0ah, 0dh, 0
+	   69 64 20 69 6E
+	   70 75 74 0A 0D
+	   00
+
+ 0000003A 49 6E 76 61 6C	diffErrStr BYTE "Invalid time difference, check your times", 0ah, 0dh, 0
+	   69 64 20 74 69
+	   6D 65 20 64 69
+	   66 66 65 72 65
+	   6E 63 65 2C 20
+	   63 68 65 63 6B
+	   20 79 6F 75 72
+	   20 74 69 6D 65
+	   73 0A 0D 00
+
+ 00000066 20 68 6F 75 72	hrOutStr BYTE " hours, ", 0
+	   73 2C 20 00
+ 0000006F 20 6D 69 6E 75	mnOutStr BYTE " minutes", 0ah, 0dh, 0
+	   74 65 73 0A 0D
+	   00
+
+ 0000007A 00 00			timeArr BYTE ?, ?		; array of: start total minutes, end total minutes
+ 0000007C 00			diffHr BYTE ?			; time difference, hours portion
+ 0000007D 00			diffMin BYTE ?			; time difference, minutes portion
 
  00000000			.code
  00000000			main PROC
-
-				;;;;;; STEP 2: How to set a breakpoint:									;;;;;;
-				;;;;;;         Set the break point at the "mov" line of code below by	;;;;;;
-				;;;;;;         clicking in the grey border on the left of this text		;;;;;;
-				;;;;;;         editor window, at the line of code.						;;;;;;
-				;;;;;;         You should see a red circle appear in the border if		;;;;;;
-				;;;;;;         you've successfully set the breakpoint.					;;;;;;
- 00000000  B8 FFFFFFFE			mov eax, -2		; set the breakpoint on this line
 					
-				;;;;;; STEP 3: How to start the program and run to the breakpoint:		;;;;;;
-				;;;;;;         At the Debug pull down menu, select Start Debugging so	;;;;;;
-				;;;;;;         that execution will run to the break point and stop		;;;;;;
-				;;;;;;         right BEFORE running the line of code at the breakpoint. ;;;;;;
-				;;;;;;         You should see a yellow arrow pointing at the line of	;;;;;;
-				;;;;;;         code, indicating that this is the next instruction that	;;;;;;
-				;;;;;;         will run.												;;;;;;
-
-				;;;;;; STEP 4: How to look at register values at a breakpoint:			;;;;;;
-				;;;;;;         At the Debug pull down menu, select Windows -> Registers ;;;;;;
-				;;;;;;         This opens the register window, showing the content      ;;;;;;
-				;;;;;;         of all registers, in hexadecimal                         ;;;;;;
-
-				;;;;;; STEP 5: How to step through each line of code:					;;;;;;
-				;;;;;;         At the Debug pull down menu, select Step Into or hit F11 ;;;;;;
-				;;;;;;         to step through (execute) the line of code.				;;;;;;
-				;;;;;;         You should see changes in the register window, in red,   ;;;;;;
-				;;;;;;         after the line of code runs.								;;;;;;
-				;;;;;;         Running a line of code always changes at least			;;;;;;
-				;;;;;;         1 register value											;;;;;;
-
-				;;;;;; STEP 6: Follow the instructions of step 5 to step through each	;;;;;;
-				;;;;;;         of the 4 lines of code below.							;;;;;;
-				;;;;;;         For each line of code:									;;;;;;
-				;;;;;;         - hit F11 or select Step Into (You should see the yellow ;;;;;;
-				;;;;;;           arrow move to the next line of code)					;;;;;; 
-				;;;;;;         - then record the value of the register that you see     ;;;;;;
-				;;;;;;           in the register window.								;;;;;;
-				;;;;;;         Make sure the value you enter MATCHES THE SIZE of the	;;;;;;
-				;;;;;;         register in the question									;;;;;;
-				;;;;;;         And make sure that you record the register value	AFTER	;;;;;;
-				;;;;;;         you've run the line of code next to it, which means 		;;;;;;
-				;;;;;;         AFTEr the yellow arrow has moved to the next line of code;;;;;;
-
-				;;;;;;         Note: After you type in the first value and step through ;;;;;;
-				;;;;;;         the next line of code, the debugger will warn you that   ;;;;;;
-				;;;;;;         the source file has been changed.						;;;;;;
-				;;;;;;         You can hit OK to continue because you're only changing  ;;;;;;
-				;;;;;;         the comments, not the code.								;;;;;;
-
- 00000005  B4 05			mov ah, 101b		;   AX = 05FE
- 00000007  80 EC FE			sub ah, -2			;   AH = 07
- 0000000A  FE C0			inc al				;   AL =   FF
- 0000000C  35 0000FFFF			xor eax, 0FFFFH		;  EAX = FFFFF800
-
-				;;;;;; STEP 7:  How to see memory values:								;;;;;;
-				;;;;;;			From the Debug pull down menu, select Memory -> Memory1 ;;;;;;
-				;;;;;;			At the memory window Address field, type in             ;;;;;;
-				;;;;;;			"&bigData" without quotes. (Those with C language       ;;;;;;
-				;;;;;;			background will notice that &bigData means "address		;;;;;;
-				;;;;;;			of bigData")											;;;;;;
-				;;;;;;			As shown in the class notes, the left column has the    ;;;;;;
-				;;;;;;			address of the memory, and the middle column is the     ;;;;;;
-				;;;;;;			data that's stored in memory.                           ;;;;;;
-				;;;;;;			The first 8 bytes of data shown in the memory window    ;;;;;;
-				;;;;;;			is bigData's value.	Recall that each byte of data is    ;;;;;;
-				;;;;;;			2 hexadecimal digits.			     			        ;;;;;;
-				;;;;;;			Enter below what bigData looks like in memory.			;;;;;;
-
-				;    bigData in memory = 30 31 32 33 34 35 36 37 38 39 41 42 43 44 45 46
+ 00000000			top :
+					; 1. read time: pass arguments through *registers*
+					;; call readTime proc and pass first 3 strings and timeArr
+ 00000000  BE 00000000 R		mov esi, OFFSET hrStr
+ 00000005  BB 00000014 R		mov ebx, OFFSET mnStr
+ 0000000A  BF 0000002A R		mov edi, OFFSET timeErrStr
+ 0000000F  BA 0000007A R		mov edx, OFFSET timeArr
+ 00000014  B9 00000002			mov ecx, 2
+ 00000019  E8 0000002B			call readTime
 
 
-				;;;;;; STEP 8: How to stop debugging                               ;;;;;;
-				;;;;;;         At the Debug pull down menu, select Stop Debugging  ;;;;;;
-				;;;;;;         Execution should stop and the program ends          ;;;;;;
+					; 2. find difference: pass arguments through *the stack*
+					;; call findDiff proc and pass timeArr, diffHr, diffMin
+ 0000001E  68 0000007A R		push OFFSET timeArr
+ 00000023  E8 00000075			call findDiff
+
+					; 3. based on return value, either:
+					; a) print result
+ 00000028  0F B6 05			movzx eax, diffHr
+	   0000007C R
+ 0000002F  E8 00000000 E		call writeDec
+					;; write code to use macro to print hrOutStr
+
+ 00000034  0F B6 05			movzx eax, diffMin
+	   0000007D R
+ 0000003B  E8 00000000 E		call writeDec
+					;; write code to use macro to print minOutStr
 
 
- 00000011  E8 00000000 E		call crlf
+ 00000040  EB 00			jmp theEnd
+
+					; or b) print error message
+ 00000042				invalidDiff :
+					;; write code to use macro to print diffErrStr
+
+
+ 00000042				theEnd:
+					;jmp top      ; create infinite loop for testing
+
 					exit	
- 00000016  6A 00	   *	    push   +000000000h
- 00000018  E8 00000000 E   *	    call   ExitProcess
- 0000001D			main ENDP
+ 00000042  6A 00	   *	    push   +000000000h
+ 00000044  E8 00000000 E   *	    call   ExitProcess
+ 00000049			main ENDP
+
+
+ 00000049			readTime PROC
+ 00000049			readTop:
+					printStr esi
+ 00000049  52		     1		push edx				
+ 0000004A  8B D6	     1		mov edx, esi		
+ 0000004C  E8 00000000 E     1		call writeString
+ 00000051  5A		     1		pop edx
+ 00000052  E8 00000000 E		call ReadInt
+ 00000057  83 F8 00			cmp eax, 0
+ 0000005A  7C 32			jl invalidTime
+ 0000005C  83 F8 17			cmp eax, 23
+ 0000005F  7F 2D			jg invalidTime
+ 00000061  8A E0			mov ah, al
+ 00000063  B0 3C			mov al, 60
+ 00000065  F6 E4			mul ah
+ 00000067  72 25			jc invalidTime
+ 00000069  8A E8			mov ch, al
+
+					printStr ebx
+ 0000006B  52		     1		push edx				
+ 0000006C  8B D3	     1		mov edx, ebx		
+ 0000006E  E8 00000000 E     1		call writeString
+ 00000073  5A		     1		pop edx
+ 00000074  E8 00000000 E		call ReadInt
+ 00000079  83 F8 00			cmp eax, 0
+ 0000007C  7C 10			jl invalidTime
+ 0000007E  83 F8 3B			cmp eax, 59
+ 00000081  7F 0B			jg invalidTime
+ 00000083  02 E8			add ch, al
+ 00000085  80 F9 01			cmp cl, 1
+ 00000088  74 0F			je saveSecond
+ 0000008A  88 2A			mov [edx], ch
+ 0000008C  E2 BB			loop readTop
+
+ 0000008E				invalidTime:
+						printStr edi
+ 0000008E  52		     1		push edx				
+ 0000008F  8B D7	     1		mov edx, edi		
+ 00000091  E8 00000000 E     1		call writeString
+ 00000096  5A		     1		pop edx
+ 00000097  EB B0				jmp readTop
+						
+ 00000099				saveSecond:
+ 00000099  88 6A 01				mov [edx+1], ch
+ 0000009C  C3					ret
+						
+
+ 0000009D			readTime ENDP
+
+
+ 0000009D			findDiff PROC
+ 0000009D  55			push ebp
+ 0000009E  8B EC		mov ebp, esp
+ 000000A0  8B 45 04		mov eax,dword ptr [ebp+4]
+ 000000A3  8B 55 08		mov edx,dword ptr [ebp+8]
+ 000000A6  3B C2		cmp eax, edx
+ 000000A8  7F 17		jg sub1
+
+ 000000AA  2A D0		sub dl, al
+ 000000AC  B2 00		mov dl, 0
+ 000000AE  8A C1		mov al, cl
+ 000000B0  B1 3C		mov cl, 60
+ 000000B2  F6 F1		div cl
+ 000000B4  88 15 0000007D R	mov diffMin, dl
+ 000000BA  A2 0000007C R	mov diffHr, al
+ 000000BF  EB 17		jmp endprog
+
+ 000000C1			sub1:
+ 000000C1  2A C2		sub al, dl
+ 000000C3  B2 00		mov dl, 0
+ 000000C5  8A C1		mov al, cl
+ 000000C7  B1 3C		mov cl, 60
+ 000000C9  F6 F1		div cl
+ 000000CB  88 15 0000007D R	mov diffMin, dl
+ 000000D1  A2 0000007C R	mov diffHr, al
+ 000000D6  EB 00		jmp endprog
+
+ 000000D8			endprog:
+
+ 000000D8  5D			pop ebp
+ 000000D9  C3			ret
+
+
+ 000000DA			findDiff ENDP
+
 
 				END main
-Microsoft (R) Macro Assembler Version 14.30.30706.0	    01/12/22 22:40:06
-Assignment 2 La					     Symbols 2 - 1
+Microsoft (R) Macro Assembler Version 14.30.30709.0	    02/26/22 21:34:43
+0Lab 7: Calculate time difference with procedure	     Symbols 2 - 1
 
 
+
+
+Macros:
+
+                N a m e                 Type
+
+printStr . . . . . . . . . . . .	Proc
 
 
 Structures and Unions:
@@ -221,8 +305,8 @@ Segments and Groups:
 
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
-_DATA  . . . . . . . . . . . . .	32 Bit	 00000008 Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 0000001D Para	  Public  'CODE'	
+_DATA  . . . . . . . . . . . . .	32 Bit	 0000007E Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 000000DA Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -329,8 +413,18 @@ WriteStackFrame  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 WriteString  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteToFile  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteWindowsMsg  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 0000001D Public STDCALL
+findDiff . . . . . . . . . . . .	P Near	 0000009D _TEXT	Length= 0000003D Public STDCALL
+  sub1 . . . . . . . . . . . . .	L Near	 000000C1 _TEXT	
+  endprog  . . . . . . . . . . .	L Near	 000000D8 _TEXT	
+main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000049 Public STDCALL
+  top  . . . . . . . . . . . . .	L Near	 00000000 _TEXT	
+  invalidDiff  . . . . . . . . .	L Near	 00000042 _TEXT	
+  theEnd . . . . . . . . . . . .	L Near	 00000042 _TEXT	
 printf . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
+readTime . . . . . . . . . . . .	P Near	 00000049 _TEXT	Length= 00000054 Public STDCALL
+  readTop  . . . . . . . . . . .	L Near	 00000049 _TEXT	
+  invalidTime  . . . . . . . . .	L Near	 0000008E _TEXT	
+  saveSecond . . . . . . . . . .	L Near	 00000099 _TEXT	
 scanf  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 wsprintfA  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 
@@ -548,14 +642,18 @@ VK_UP  . . . . . . . . . . . . .	Number	 00000026h
 WINDOW_BUFFER_SIZE_EVENT . . . .	Number	 00000004h   
 WriteConsoleOutputCharacter  . .	Text   	 WriteConsoleOutputCharacterA
 WriteConsole . . . . . . . . . .	Text   	 WriteConsoleA
-bigData  . . . . . . . . . . . .	QWord	 00000000 _DATA	
 black  . . . . . . . . . . . . .	Number	 00000000h   
 blue . . . . . . . . . . . . . .	Number	 00000001h   
 brown  . . . . . . . . . . . . .	Number	 00000006h   
 cyan . . . . . . . . . . . . . .	Number	 00000003h   
+diffErrStr . . . . . . . . . . .	Byte	 0000003A _DATA	
+diffHr . . . . . . . . . . . . .	Byte	 0000007C _DATA	
+diffMin  . . . . . . . . . . . .	Byte	 0000007D _DATA	
 exit . . . . . . . . . . . . . .	Text   	 INVOKE ExitProcess,0
 gray . . . . . . . . . . . . . .	Number	 00000008h   
 green  . . . . . . . . . . . . .	Number	 00000002h   
+hrOutStr . . . . . . . . . . . .	Byte	 00000066 _DATA	
+hrStr  . . . . . . . . . . . . .	Byte	 00000000 _DATA	
 lightBlue  . . . . . . . . . . .	Number	 00000009h   
 lightCyan  . . . . . . . . . . .	Number	 0000000Bh   
 lightGray  . . . . . . . . . . .	Number	 00000007h   
@@ -563,7 +661,11 @@ lightGreen . . . . . . . . . . .	Number	 0000000Ah
 lightMagenta . . . . . . . . . .	Number	 0000000Dh   
 lightRed . . . . . . . . . . . .	Number	 0000000Ch   
 magenta  . . . . . . . . . . . .	Number	 00000005h   
+mnOutStr . . . . . . . . . . . .	Byte	 0000006F _DATA	
+mnStr  . . . . . . . . . . . . .	Byte	 00000014 _DATA	
 red  . . . . . . . . . . . . . .	Number	 00000004h   
+timeArr  . . . . . . . . . . . .	Byte	 0000007A _DATA	
+timeErrStr . . . . . . . . . . .	Byte	 0000002A _DATA	
 white  . . . . . . . . . . . . .	Number	 0000000Fh   
 wsprintf . . . . . . . . . . . .	Text   	 wsprintfA
 yellow . . . . . . . . . . . . .	Number	 0000000Eh   
