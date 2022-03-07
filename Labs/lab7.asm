@@ -1,7 +1,7 @@
 TITLE  Lab 7: Calculate time difference with procedures
 		
 ; Name: Tom Ekshtein, Oskar Castren
-;ASK IF WE NEED EVERY SINGLE VARIABLE IN 8 BIT REGISTERS
+
 
 INCLUDE Irvine32.inc
 
@@ -44,24 +44,29 @@ top :
 
 	; 2. find difference: pass arguments through *the stack*
 	;; call findDiff proc and pass timeArr, diffHr, diffMin
+	sub esp, 12 ;clare did push eax
 	push OFFSET timeArr
+	push OFFSET diffHr
+	push OFFSET diffMin
 	call findDiff
-	nop
-	;pop eax
+
+	pop eax
 	cmp eax, 1
 	je invalidDiff
+
 	; 3. based on return value, either:
 	; a) print result
+
 	movzx eax, diffHr
 	call writeDec
 	;; write code to use macro to print hrOutStr
+
 	printStr OFFSET hrOutStr
 	movzx eax, diffMin
 	call writeDec
-	printStr OFFSET mnOutStr
-
+	
 	;; write code to use macro to print minOutStr
-
+	printStr OFFSET mnOutStr
 
 	jmp theEnd
 
@@ -72,33 +77,38 @@ top :
 
 
 	theEnd:
-	;jmp top      ; create infinite loop for testing
+	jmp top      ; create infinite loop for testing
 
 	exit	
 main ENDP
 
 
 readTime PROC
+	;didn't need to do these 3 lines or popad after
+	push ebp
+	mov ebp, esp
+	pushad
+
 readTop:
 	printStr esi
 	call ReadInt
-	cmp eax, 0
+	cmp al, 0
 	jl invalidTime
-	cmp eax, 23
+	cmp al, 23
 	jg invalidTime
-	mov ah, al
-	mov al, 60
+	mov ah, 60
 	mul ah
 	jc invalidTime
 	mov ch, al
 
 	printStr ebx
 	call ReadInt
-	cmp eax, 0
+	cmp al, 0
 	jl invalidTime
-	cmp eax, 59
+	cmp al, 59
 	jg invalidTime
 	add ch, al
+	jc invalidTime
 	cmp cl, 1
 	je saveSecond
 	mov [edx], ch
@@ -110,6 +120,8 @@ readTop:
 		
 	saveSecond:
 		mov [edx+1], ch
+		pop ebp
+		popad
 		ret
 		
 
@@ -117,30 +129,36 @@ readTime ENDP
 
 
 findDiff PROC
-push ebp
-mov ebp, esp
-mov eax, [ebp+8]
-mov edx, [eax]
-inc eax
-mov ecx, [eax]
-sub cl, dl
-jc invalid
-mov ah, 0
-mov al, cl
-mov cl, 60
-div cl
-mov diffMin, ah
-mov diffHr, al
-pop ebp
-push 0
-RET 
+	push ebp
+	mov ebp, esp
+	pushad
+	mov eax, [ebp+16]
+	mov edx, [eax]
+	sub dh, dl
+	jc invalid
+	mov ah, 0
+	mov al, dh
+	mov cl, 60
+	div cl
 
-invalid:
-;mov eax, 1
-push 1
-pop ebp
+	mov ebx, [ebp+8] ;could've made it shorter by subtracting directly and not saving values to registers
+	mov [ebx], ah
+	mov ecx, [ebp+12]
+	mov [ecx], al
 
-RET 
+	mov eax, 0
+	mov [ebp+20], eax
+	popad
+	pop ebp
+	ret 12
+
+	invalid:
+		mov eax, 1
+		mov [ebp+20], eax
+		popad
+		pop ebp
+		ret 12
+
 findDiff ENDP
 
 
