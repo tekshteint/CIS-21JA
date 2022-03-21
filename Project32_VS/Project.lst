@@ -1,13 +1,31 @@
-Microsoft (R) Macro Assembler Version 14.30.30709.0	    03/06/22 17:38:30
-"midterm 2 review: sample question			     Page 1 - 1
+Microsoft (R) Macro Assembler Version 14.30.30709.0	    03/20/22 22:28:57
+final revie						     Page 1 - 1
 
 
-				TITLE midterm 2 review: sample questions
+				TITLE final review
 
-				; Covers modules 5 (branching), 6 (bit-wise instruction / indirect addressing), 7 (procedures / macros)
-				; The following questions are in the same 2 types of questions you'll see in midterm 2:
-				; - questions to write code
-				; - questions to explain code or show results
+				COMMENT !
+				Example 1: Write code to implement the following loop. All variables are unsigned bytes. Catch all possible errors with jumps to error label E1.
+					while (var1 > var2)
+						var2 = var2 * 5
+
+				Example 2:  The following question is longer than the typical exam question. 
+				It could be 3 different exam questions, to give you more practice, and in the 
+				real exam you would only need to do one part of this question.
+
+				Write a procedure to copy str1 to str2. Both strings are text strings that are null terminated. 
+				The procedure returns 1 if all of str1 can be copied to str2, and returns 0 if str1 cannot be copied 
+				to str2 because str2 is smaller in size. Use string instructions as needed.
+
+				The procedure call is
+				sub esp, 4			; for return value of 1 or 0
+				push OFFSET str1
+				push OFFSET str2
+				call stringCopy	
+
+
+				!
+
 
 				INCLUDE Irvine32.inc
 			      C ; Include file for Irvine32.lib             (Irvine32.inc)
@@ -28,203 +46,134 @@ Microsoft (R) Macro Assembler Version 14.30.30709.0	    03/06/22 17:38:30
 			      C .LIST
 			      C 
 
-				printStr MACRO str
-					push eax
-					push edx
-					mov edx, OFFSET str
-					mov al, '*'
-					call writeChar
-					call writeString
-					call writeChar
-					call crlf
-					pop edx
-					pop eax
-
-				ENDM
 
 
  00000000			.data
- 00000000 69 6E 76 61 6C	errorStr BYTE "invalid result",0
-	   69 64 20 72 65
-	   73 75 6C 74 00
+ 00000000 32			var1 byte 50
+ 00000001 0A			var2 byte 10
 
- 0000000F 5A			var1 SBYTE 90
- 00000010 0A			var2 SBYTE 10
- 00000011 9C			var3 SBYTE -100
- 00000012 00000001		arr DWORD 1,2,3,4,5,6,7,8
-	   00000002
-	   00000003
-	   00000004
-	   00000005
-	   00000006
-	   00000007
-	   00000008
- 00000032 FFFFFFFF		var4 DWORD -1, -1
-	   FFFFFFFF
+ 00000002 74 68 69 73 20	firstStr byte "this is the first string", 0
+	   69 73 20 74 68
+	   65 20 66 69 72
+	   73 74 20 73 74
+	   72 69 6E 67 00
+ 0000001B 54 68 69 73 20	secondStr byte "This is the second string. This one will be much bigger to test", 0
+	   69 73 20 74 68
+	   65 20 73 65 63
+	   6F 6E 64 20 73
+	   74 72 69 6E 67
+	   2E 20 54 68 69
+	   73 20 6F 6E 65
+	   20 77 69 6C 6C
+	   20 62 65 20 6D
+	   75 63 68 20 62
+	   69 67 67 65 72
+	   20 74 6F 20 74
+	   65 73 74 00
+ 0000005B 73 6D 61 6C 6C	smallStr byte "small string", 0
+	   20 73 74 72 69
+	   6E 67 00
 
  00000000			.code
+
  00000000			main PROC
-				; The first 3 sample questions are to write code
+ 00000000  A0 00000001 R	mov al, var2
+ 00000005  B3 05		mov bl, 5
+ 00000007			loopTop:
+ 00000007  38 05 00000000 R		cmp var1, al
+ 0000000D  76 0B			jbe E1
+ 0000000F  F6 E3			mul bl
+ 00000011  72 07			jc E1
+ 00000013  EB F2			jmp loopTop
+					
+ 00000015			endLoop:
+ 00000015  A2 00000001 R		mov var2, al
 
-				; 1. write a macro that prints the errorStr (defined above)
-				; on a separate line of text, with a * character at the beginning and end of the string
-				printStr errorStr
- 00000000  50		     1		push eax
- 00000001  52		     1		push edx
- 00000002  BA 00000000 R     1		mov edx, OFFSET errorStr
- 00000007  B0 2A	     1		mov al, '*'
- 00000009  E8 00000000 E     1		call writeChar
- 0000000E  E8 00000000 E     1		call writeString
- 00000013  E8 00000000 E     1		call writeChar
- 00000018  E8 00000000 E     1		call crlf
- 0000001D  5A		     1		pop edx
- 0000001E  58		     1		pop eax
+ 0000001A			E1:
+					;do something
 
-				; 2. write code that implements:
-				;   var3 = var1 * var2 - var3
-				; where the variables are defined in .data
-				;
-				; if any operation ends up with an invalid result, invoke the
-				; macro of question 1 
-				; var1, var2, var3 can contain any data value. You shouldn't rely 
-				; on the initialized data above when writing code to catch invalid result
+ 0000001A  83 EC 04		sub esp, 4			; for return value of 1 or 0
+ 0000001D  68 00000002 R	push OFFSET firstStr
+ 00000022  68 0000001B R	push OFFSET secondStr
+ 00000027  E8 00000007		call stringCopy	
 
- 0000001F  A0 0000000F R	mov al, var1
- 00000024  F6 2D 00000010 R	imul var2
- 0000002A  70 0F		jo invalid
- 0000002C  2A 05 00000011 R	sub al, var3
- 00000032  70 07		jo invalid
- 00000034  A2 00000011 R	mov var3, al
- 00000039  EB 1F		jmp next
 
- 0000003B			invalid:
-					printStr errorStr
- 0000003B  50		     1		push eax
- 0000003C  52		     1		push edx
- 0000003D  BA 00000000 R     1		mov edx, OFFSET errorStr
- 00000042  B0 2A	     1		mov al, '*'
- 00000044  E8 00000000 E     1		call writeChar
- 00000049  E8 00000000 E     1		call writeString
- 0000004E  E8 00000000 E     1		call writeChar
- 00000053  E8 00000000 E     1		call crlf
- 00000058  5A		     1		pop edx
- 00000059  58		     1		pop eax
-
- 0000005A			next:
-				; 3. write a procedure that accepts 2 input arguments: an array 
-				; of DWORDs and the number of elements. The procedure zeroes out all 
-				; the elements at each even index (index 0, 2, 4...)
-				;
-				; the procedure call is given here:
- 0000005A  68 00000012 R	push OFFSET arr     
- 0000005F  6A 08		push LENGTHOF arr   
- 00000061  E8 00000007		call proc1
 
 				exit
- 00000066  6A 00	   *	    push   +000000000h
- 00000068  E8 00000000 E   *	    call   ExitProcess
- 0000006D			main ENDP
-
+ 0000002C  6A 00	   *	    push   +000000000h
+ 0000002E  E8 00000000 E   *	    call   ExitProcess
+ 00000033			main ENDP
 				COMMENT !
 				stack:
-				offset arr
-				lengthof arr
-				ebp
-				ecx
-				ebx
+				return			16
+				firststr		12
+				secondstr		8
+				ebp				4
+
 
 				!
- 0000006D			proc1 PROC
- 0000006D  55				push ebp
- 0000006E  8B EC			mov ebp, esp
- 00000070  51				push ecx
- 00000071  53				push ebx
- 00000072  8B 4D 08			mov ecx, [ebp+8]
- 00000075  8B 5D 0C			mov ebx, [ebp+12]
 
- 00000078				loopTop:
- 00000078  C7 03 00000000			mov DWORD PTR [ebx], 0
- 0000007E  83 C3 08				add ebx, 8
- 00000081  83 E9 02				sub ecx, 2
- 00000084  83 F9 00				cmp ecx, 0
- 00000087  7F EF				jg loopTop
 
- 00000089  5B				pop ebx
- 0000008A  59				pop ecx
- 0000008B  5D				pop ebp
- 0000008C  C2 0008			ret 8
- 0000008F			proc1 ENDP
+ 00000033			stringCopy PROC
+ 00000033  55				push ebp
+ 00000034  8B EC			mov ebp, esp
+ 00000036  60				pushad
+
+
+ 00000037  8B 7D 0C			mov edi, [ebp+12]
+ 0000003A  B9 FFFFFFFF			mov ecx, -1
+
+ 0000003F  FC				cld
+ 00000040  32 C0			xor al, al
+ 00000042  F2/ AE			repne scasb
+
+ 00000044  4F				dec edi
+					
+ 00000045  8B DF			mov ebx, edi
+
+ 00000047  8B 7D 08			mov edi, [ebp+8]
+ 0000004A  B9 FFFFFFFF			mov ecx, -1
+ 0000004F  FC				cld
+ 00000050  32 C0			xor al, al
+ 00000052  F2/ AE			repne scasb
+ 00000054  4F				dec edi
+
+ 00000055  2B 5D 0C			sub ebx, [ebp+12]
+ 00000058  2B 7D 08			sub edi, [ebp+8]
+
+ 0000005B  3B DF			cmp ebx, edi
+ 0000005D  77 15			ja noCopy
+
+ 0000005F  8B 75 0C			mov esi, [ebp+12]
+ 00000062  8B 7D 08			mov edi, [ebp+8]
+ 00000065  FC				cld
+ 00000066  8B CB			mov ecx, ebx	;lengthof firstStr
+ 00000068  41				inc ecx			; for 0 termination
+ 00000069  F3/ A4			rep movsb
+ 0000006B  C7 45 10			mov DWORD PTR [ebp+16], 1
+	   00000001
+ 00000072  EB 07			jmp done
+
+
+
+ 00000074				noCopy:
+ 00000074  C7 45 10				mov DWORD PTR [ebp+16], 0
+	   00000000
+
+ 0000007B				done:
+ 0000007B  61					popad
+ 0000007C  5D					pop ebp
+ 0000007D  C2 0008				ret 8
+
+
+ 00000080			stringCopy ENDP
+
 				END main
 
-
-				COMMENT !
-
-				These sample questions are to read code
-
-				4. With the procedure call to proc1 of question 3, show a diagram
-				of the stack frame of proc1 at the point right after all the even indexed
-				elements have been zeroed out. 
-				For each value in the stack frame, you can either put the register 
-				name that holds the value (such as: eax), or describe what the value 
-				is (such as: return addr in main)
-				Make sure to list the values in the order that they appear in the stack,
-				and show where the stack top is
-
-				stack:
-				offset arr		address of arr[0]
-				lengthof arr	length of arr = 8
-				ebp				return address
-				ecx				counter for looping
-				ebx				used for adressing the array
-				TOP
+Microsoft (R) Macro Assembler Version 14.30.30709.0	    03/20/22 22:28:57
+final revie						     Symbols 2 - 1
 
 
-				5. Show the value of all registers that are changed after each
-				instruction
-
-				xor al, al			
-				or al, 82h			
-				shl al, 1			
-				jc L1				
-				and bl, 0
-				jz L2
-				L1: not al			
-				L2:
-
-
-				6. Using the same arr defined in main above, show the values in the array
-				after this code segment:
-				1,2,3,4,5,6,7,8
-
-				mov edx, OFFSET arr			address of arr[0]
-				add edx, LENGTHOF arr		arr[2]
-				add DWORD PTR [edx], 2		arr[2] = 3+2 = 5
-				sub edx, 4					arr[1]
-				add DWORD PTR [edx], 4		arr[1] = 2+4 = 6
-				1,6,5,4,5,6,7,8
-
-
-				7. Explain why you need to run:  mov ebp, esp     in a procedure that
-				accepts arguments through the stack
-
-				this way we can save the stack pointer in ebp and use it to reference what we have in the stack
-
-				Explain why you generally don't need to run:  mov ebp, esp   in a procedure that
-				acccepts arguments through registers
-
-				Since we aren't using the stack for inputs in a proc that uses registers for its arguments we don't need to reference anything in there.
-!
-Microsoft (R) Macro Assembler Version 14.30.30709.0	    03/06/22 17:38:30
-"midterm 2 review: sample question			     Symbols 2 - 1
-
-
-
-
-Macros:
-
-                N a m e                 Type
-
-printStr . . . . . . . . . . . .	Proc
 
 
 Structures and Unions:
@@ -315,8 +264,8 @@ Segments and Groups:
 
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
-_DATA  . . . . . . . . . . . . .	32 Bit	 0000003A Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 0000008F Para	  Public  'CODE'	
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000068 Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000080 Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -423,13 +372,15 @@ WriteStackFrame  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 WriteString  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteToFile  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteWindowsMsg  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 0000006D Public STDCALL
-  invalid  . . . . . . . . . . .	L Near	 0000003B _TEXT	
-  next . . . . . . . . . . . . .	L Near	 0000005A _TEXT	
+main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000033 Public STDCALL
+  loopTop  . . . . . . . . . . .	L Near	 00000007 _TEXT	
+  endLoop  . . . . . . . . . . .	L Near	 00000015 _TEXT	
+  E1 . . . . . . . . . . . . . .	L Near	 0000001A _TEXT	
 printf . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
-proc1  . . . . . . . . . . . . .	P Near	 0000006D _TEXT	Length= 00000022 Public STDCALL
-  loopTop  . . . . . . . . . . .	L Near	 00000078 _TEXT	
 scanf  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
+stringCopy . . . . . . . . . . .	P Near	 00000033 _TEXT	Length= 0000004D Public STDCALL
+  noCopy . . . . . . . . . . . .	L Near	 00000074 _TEXT	
+  done . . . . . . . . . . . . .	L Near	 0000007B _TEXT	
 wsprintfA  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 
 
@@ -646,13 +597,12 @@ VK_UP  . . . . . . . . . . . . .	Number	 00000026h
 WINDOW_BUFFER_SIZE_EVENT . . . .	Number	 00000004h   
 WriteConsoleOutputCharacter  . .	Text   	 WriteConsoleOutputCharacterA
 WriteConsole . . . . . . . . . .	Text   	 WriteConsoleA
-arr  . . . . . . . . . . . . . .	DWord	 00000012 _DATA	
 black  . . . . . . . . . . . . .	Number	 00000000h   
 blue . . . . . . . . . . . . . .	Number	 00000001h   
 brown  . . . . . . . . . . . . .	Number	 00000006h   
 cyan . . . . . . . . . . . . . .	Number	 00000003h   
-errorStr . . . . . . . . . . . .	Byte	 00000000 _DATA	
 exit . . . . . . . . . . . . . .	Text   	 INVOKE ExitProcess,0
+firstStr . . . . . . . . . . . .	Byte	 00000002 _DATA	
 gray . . . . . . . . . . . . . .	Number	 00000008h   
 green  . . . . . . . . . . . . .	Number	 00000002h   
 lightBlue  . . . . . . . . . . .	Number	 00000009h   
@@ -663,10 +613,10 @@ lightMagenta . . . . . . . . . .	Number	 0000000Dh
 lightRed . . . . . . . . . . . .	Number	 0000000Ch   
 magenta  . . . . . . . . . . . .	Number	 00000005h   
 red  . . . . . . . . . . . . . .	Number	 00000004h   
-var1 . . . . . . . . . . . . . .	Byte	 0000000F _DATA	
-var2 . . . . . . . . . . . . . .	Byte	 00000010 _DATA	
-var3 . . . . . . . . . . . . . .	Byte	 00000011 _DATA	
-var4 . . . . . . . . . . . . . .	DWord	 00000032 _DATA	
+secondStr  . . . . . . . . . . .	Byte	 0000001B _DATA	
+smallStr . . . . . . . . . . . .	Byte	 0000005B _DATA	
+var1 . . . . . . . . . . . . . .	Byte	 00000000 _DATA	
+var2 . . . . . . . . . . . . . .	Byte	 00000001 _DATA	
 white  . . . . . . . . . . . . .	Number	 0000000Fh   
 wsprintf . . . . . . . . . . . .	Text   	 wsprintfA
 yellow . . . . . . . . . . . . .	Number	 0000000Eh   

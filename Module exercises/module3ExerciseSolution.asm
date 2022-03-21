@@ -69,8 +69,9 @@ call writeString
 ; 11. write code to read in the user's name
 
 mov ecx, 20						; readString will read in up to 19 chars and append 0 at the end
-mov edx, OFFSET uName
+mov edx, OFFSET uname
 call readString
+nop
 
 ; 12. write code to print "Hi, <user's name>" where user's name is what you read in
 mov edx, OFFSET hi				; print hi string
